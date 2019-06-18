@@ -13,9 +13,38 @@ subtest basic => sub {
     is($n, 2);
 };
 
-#XXX
-#subtest "param:strategy" => sub {
-#};
+subtest "return values" => sub {
+    subtest "success, !wantarray" => sub {
+        my $n = 0;
+        my $res = retry { $n++ < 1 and die; ("X","Y","Z") } initial_delay=>0.1;
+        is($n, 2);
+        is($res, "Z");
+    };
+    subtest "success, wantarray" => sub {
+        my $n = 0;
+        my @res = retry { $n++ < 1 and die; ("X","Y","Z") } initial_delay=>0.1;
+        is($n, 2);
+        is_deeply(\@res, ["X","Y","Z"]);
+    };
+    subtest "failure, !wantarray" => sub {
+        my $n = 0;
+        my $res = retry { $n++ < 1 and die; ("X","Y","Z") } initial_delay=>0.1, max_attempts=>1;
+        is($n, 1);
+        is_deeply($res, undef);
+    };
+    subtest "failure, !wantarray" => sub {
+        my $n = 0;
+        my @res = retry { $n++ < 1 and die; ("X","Y","Z") } initial_delay=>0.1, max_attempts=>1;
+        is($n, 1);
+        is_deeply(\@res, []);
+    };
+};
+
+subtest "param:strategy" => sub {
+    my $n = 0;
+    retry { $n++ < 1 and die } strategy=>'Constant', delay=>0.1;
+    is($n, 2);
+};
 
 subtest "param:retry_if" => sub {
     my $n = 0;

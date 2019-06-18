@@ -43,6 +43,10 @@ sub new {
 sub run {
     my $self = shift;
 
+    my @attempt_result;
+    my $attempt_result;
+    my $wantarray = wantarray;
+
     while(1) {
         if (my $timestamp = $self->{_needs_sleeping_until}) {
             # we can't retry until we have waited enough time
@@ -53,14 +57,11 @@ sub run {
 
         # run the code, capture the error
         my $error;
-        my @attempt_result;
-        my $attempt_result;
-        my $wantarray;
-        if (wantarray) {
+        if ($wantarray) {
             $wantarray = 1;
             @attempt_result = eval { $self->{attempt_code}->(@_) };
             $error = $@;
-        } elsif (!defined wantarray) {
+        } elsif (!defined $wantarray) {
             eval { $self->{attempt_code}->(@_) };
             $error = $@;
         } else {
@@ -91,16 +92,17 @@ sub run {
         }
 
         if ($delay == -1) {
+            last;
         } elsif ($self->{non_blocking}) {
             $self->{_needs_sleeping_until} = $now + $delay;
         } else {
             sleep $delay;
         }
 
-        unless ($error) {
-            return $wantarray ? @attempt_result : $attempt_result;
-        }
+        last unless $error;
     }
+
+    return $wantarray ? @attempt_result : $attempt_result;
 }
 
 
@@ -199,6 +201,6 @@ Code is based on L<Action::Retry>.
 
 Other similar modules: L<Sub::Retry>, L<Retry>.
 
-Backoff strategies from L<Algorithm::Backoff>::* modules.
+Backoff strategies are from L<Algorithm::Backoff>::* modules.
 
 =cut

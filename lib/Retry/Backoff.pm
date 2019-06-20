@@ -151,7 +151,7 @@ Usage:
 
  retry { attempt-code... } %args;
 
-Retry the attempt-code if it dies. Known arguments:
+Run attempt-code, retry if it dies. Known arguments:
 
 =over
 
@@ -170,9 +170,10 @@ Coderef. Will be called if attempt-code is deemed to have failed.
 
 =item * retry_if
 
-Coderef. If not specified, attempt-code is deemed to have failed if it dies. If
-this is specified, then the coderef will be called and if it returns true then
-the attempt-code is deemed to have failed.
+Coderef. If this argument is not specified, attempt-code is deemed to have
+failed if it dies. If this argument is specified, then the coderef will
+determine whether the attempt-code is deemed to have failed (retry_if code
+returns true) or succeeded (retry_if code returns false).
 
 Coderef will be passed:
 

@@ -129,11 +129,16 @@ sub retry (&;@) {
  # - max_attempts  =  10
  retry { ... };
 
- # pick backoff strategy (see corresponding Algorithm::Backoff::* for
- # list of parameters)
+ # select backoff strategy (see corresponding Algorithm::Backoff::* for list of
+ # parameters)
  retry { ... } strategy=>'Constant', delay=>1, max_attempts=>10;
 
- #
+ # other available 'retry' arguments
+ retry { ... }
+     on_success   => sub { my $h = shift; ... },
+     on_failure   => sub { my $h = shift; ... },
+     retry_if     => sub { my $h = shift; ... },
+     non_blocking => 0;
 
 
 =head1 DESCRIPTION

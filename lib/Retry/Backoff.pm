@@ -193,7 +193,25 @@ containing these keys:
 
 =item * non_blocking
 
-Boolean.
+Boolean. If set to true, instead of delaying after a failure (or a success,
+depending on your backoff parameters), C<retry> will immediately return. Then
+when called again it will immediately return (instead of retrying the
+attempt-code) until the required amount of delay has passed. To use this
+feature, you actually need to use the underlying OO code instead of the C<retry>
+function:
+
+ my $retry = Retry::Backoff->new(
+     attempt_code => sub { ... },
+     non_blocking => 1,
+     ....
+ );
+ while (1) {
+     # if the action failed, it doesn't sleep next time it's called, it won't do
+     # anything until it's time to retry
+     $action->run;
+
+     # do something else while time goes on
+ }
 
 =back
 

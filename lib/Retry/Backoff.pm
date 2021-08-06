@@ -1,6 +1,8 @@
 package Retry::Backoff;
 
+# AUTHORITY
 # DATE
+# DIST
 # VERSION
 
 use 5.010001;
@@ -131,7 +133,7 @@ sub retry (&;@) {
 
  # select backoff strategy (see corresponding Algorithm::Backoff::* for list of
  # parameters)
- retry { ... } strategy=>'Constant', delay=>1, max_attempts=>10;
+ retry { ... } strategy=>'Constant', initial_delay=>1, max_attempts=>10;
 
  # other available 'retry' arguments
  retry { ... }

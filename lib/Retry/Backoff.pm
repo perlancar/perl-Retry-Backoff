@@ -33,6 +33,7 @@ sub new {
     $self->{retry_if}     = delete $args{retry_if};
     $self->{non_blocking} = delete $args{non_blocking};
     $self->{attempt_code} = delete $args{attempt_code};
+    $self->{on_final_failure} = delete $args{on_final_failure};
 
     my $ba_mod = "Algorithm::Backoff::$self->{strategy}";
     (my $ba_mod_pm = "$ba_mod.pm") =~ s!::!/!g;
@@ -94,6 +95,8 @@ sub run {
         }
 
         if ($delay == -1) {
+            warn "Got delay -1" ;
+            $self->{on_final_failure}->($h) if $self->{on_final_failure} && $error;
             last;
         } elsif ($self->{non_blocking}) {
             $self->{_needs_sleeping_until} = $now + $delay;
@@ -174,6 +177,10 @@ Coderef. Will be called if attempt-code is deemed as successful.
 =item * on_failure
 
 Coderef. Will be called if attempt-code is deemed to have failed.
+
+=item * on_final_failure
+
+Coderef. Will be called if attempt-code is deemed to have failed and will not be retried.
 
 =item * retry_if
 

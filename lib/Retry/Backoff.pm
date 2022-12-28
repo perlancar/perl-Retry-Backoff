@@ -95,7 +95,6 @@ sub run {
         }
 
         if ($delay == -1) {
-            warn "Got delay -1" ;
             $self->{on_final_failure}->($h) if $self->{on_final_failure} && $error;
             last;
         } elsif ($self->{non_blocking}) {

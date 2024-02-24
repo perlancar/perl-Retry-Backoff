@@ -1,16 +1,16 @@
 package Retry::Backoff;
 
-# AUTHORITY
-# DATE
-# DIST
-# VERSION
-
 use 5.010001;
 use strict 'subs', 'vars';
 use warnings;
 use Log::ger;
 
-use Time::HiRes qw(time);
+# AUTHORITY
+# DATE
+# DIST
+# VERSION
+
+use Time::HiRes qw(time sleep);
 
 use Exporter 'import';
 our @EXPORT_OK = qw(retry);
